@@ -65,27 +65,25 @@ app.get('/weather',(req, res) => {
             })
         })
     })
-    
-    // res.send({
-    //     forecast: 'rainy',
-    //     location: 'jatani, Khurdha',
-    //     address: req.query.address
-    // })
 })
 
-app.get('/products',(req, res) => {
-    if(!req.query.search){
+app.get('/weatherbygeocode',(req, res) => {
+    if(!req.query.latitude || !req.query.longitude){
         return res.send({
-            error: 'You must provide a search term'
+            error: 'Unable to fetch your current location!'
         })
     }
-    console.log(req.query.search)
-    
-    res.send({
-       products:[]
+
+    forecast(req.query.latitude, req.query.longitude, (error, forecastData) => {
+        if(error){
+            return res.send({ error })
+        }
+
+        return res.send({
+            forecast: forecastData,
+            address: req.query.address
+        })
     })
-
-
 })
 
 app.get('/help/*', (req, res) => {
